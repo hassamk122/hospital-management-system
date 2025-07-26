@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.context.annotation.Lazy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @ToString
@@ -49,7 +52,12 @@ public class Patient {
     private BloodGroupType bloodGroup;
 
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL} ,orphanRemoval = true )
     @JoinColumn(name = "patient_insurance_id") // Owning Side
     private Insurance insurance;
+
+
+    @OneToMany(mappedBy = "patient",fetch = FetchType.LAZY , cascade = {CascadeType.REMOVE},orphanRemoval = true)
+    @ToString.Exclude
+    private List<Appointment> appointments = new ArrayList<>();
 }
